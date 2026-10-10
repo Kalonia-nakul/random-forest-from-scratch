@@ -18,8 +18,14 @@ def impurity(labels):
     p = counts / y.size                         # p: (K,) class fractions p_k
     return float(1.0 - np.sum(p ** 2))
 
-# Step 2 - split_dataset (not yet solved)
-# TODO: implement
+# Step 2 - split_dataset
+import numpy as np
+
+def split_dataset(features, labels, feature_index, threshold):
+    features = np.asarray(features)                       # features: (N, F) data
+    labels = np.asarray(labels)                           # labels: (N,) class labels
+    mask = features[:, feature_index] <= threshold        # mask: (N,) True -> row goes left
+    return features[mask], labels[mask], features[~mask], labels[~mask]
 
 # Step 3 - split_score (not yet solved)
 # TODO: implement
