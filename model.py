@@ -44,8 +44,31 @@ def split_score(parent_labels, left_labels, right_labels):
     child_impurity = w_l * impurity(left) + w_r * impurity(right)  # size-weighted child impurity
     return float(impurity(parent) - child_impurity)
 
-# Step 4 - best_split (not yet solved)
-# TODO: implement
+# Step 4 - best_split
+import numpy as np
+
+def best_split(features, labels, feature_indices):
+    # TODO: search feature_indices for the (feature, threshold) that best improves purity.
+    features = np.asarray(features)                 # features: (N, d) data
+    labels = np.asarray(labels)                     # labels: (N,) class labels
+
+    best = {'feature_index': None, 'threshold': None, 'score': 0.0}   # running best, score starts at 0
+
+    for fi in feature_indices:                      # fi: column index j being searched
+        u = np.unique(features[:, fi])              # u: sorted distinct values of column fi
+        if u.size < 2:                              # constant column: no threshold exists
+            continue
+        thresholds = (u[:-1] + u[1:]) / 2           # midpoints t_k between consecutive values
+
+        for t in thresholds:                        # t: candidate threshold
+            lf, ll, rf, rl = split_dataset(features, labels, fi, t)
+            if ll.size == 0 or rl.size == 0:        # skip empty-sided splits
+                continue
+            s = split_score(labels, ll, rl)         # s: gain Delta G for this candidate
+            if s > best['score']:                   # strictly better than the running best
+                best = {'feature_index': int(fi), 'threshold': float(t), 'score': float(s)}
+
+    return best
 
 # Step 5 - should_stop (not yet solved)
 # TODO: implement
