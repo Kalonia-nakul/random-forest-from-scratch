@@ -27,8 +27,22 @@ def split_dataset(features, labels, feature_index, threshold):
     mask = features[:, feature_index] <= threshold        # mask: (N,) True -> row goes left
     return features[mask], labels[mask], features[~mask], labels[~mask]
 
-# Step 3 - split_score (not yet solved)
-# TODO: implement
+# Step 3 - split_score
+def split_score(parent_labels, left_labels, right_labels):
+    # TODO: return a score where higher means the children are purer than the parent.
+    parent = np.asarray(parent_labels)                 # parent: (N_P,) labels before the split
+    left = np.asarray(left_labels)                     # left: (N_L,) labels in the left child
+    right = np.asarray(right_labels   )                   # right: (N_R,) labels in the right child
+
+    n = parent.size                             # n: N_P, number of parent samples
+    if n == 0:
+        return 0.0
+
+    w_l = left.size / n                         # w_l: fraction of samples going left
+    w_r = right.size / n                        # w_r: fraction of samples going right
+
+    child_impurity = w_l * impurity(left) + w_r * impurity(right)  # size-weighted child impurity
+    return float(impurity(parent) - child_impurity)
 
 # Step 4 - best_split (not yet solved)
 # TODO: implement
