@@ -158,8 +158,12 @@ def predict_tree(tree, features):
         preds[i] = predict_example_tree(tree, features[i])   # route row i through the tree
     return preds
 
-# Step 10 - bootstrap_sample (not yet solved)
-# TODO: implement
+# Step 10 - bootstrap_sample
+def bootstrap_sample(features, labels, rng):
+    # TODO: draw a bootstrap sample of rows (with replacement) using rng.
+    n = X.shape[0]
+    idx = rng.integers(0, n, size=n)  # n indices drawn uniformly with replacement
+    return X[idx], y[idx]
 
 # Step 11 - feature_subset (not yet solved)
 # TODO: implement
