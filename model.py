@@ -216,8 +216,11 @@ def combine_predictions(tree_predictions):
         result[j] = classes[np.argmax(counts)]  # majority vote; ties go to the smallest class
     return result
 
-# Step 14 - predict_forest (not yet solved)
-# TODO: implement
+# Step 14 - predict_forest
+def predict_forest(forest, features):
+    # TODO: predict classes for a dataset using the whole trained forest.
+    tree_predictions = np.array([predict_tree(entry['tree'], features) for entry in forest])
+    return combine_predictions(tree_predictions).astype(int)
 
 # Step 15 - accuracy (not yet solved)
 # TODO: implement
