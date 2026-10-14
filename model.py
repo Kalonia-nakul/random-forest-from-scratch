@@ -172,8 +172,37 @@ def feature_subset(num_features, num_to_pick, rng):
     # TODO: return num_to_pick distinct random feature indices from range(num_features) using rng.
     return rng.choice(num_features, size=num_to_pick, replace=False)
 
-# Step 12 - train_forest (not yet solved)
-# TODO: implement
+# Step 12 - train_forest
+import inspect
+import numpy as np
+
+def train_forest(features, labels, num_trees=10, max_depth=10, min_samples_split=2,
+                 num_features_per_split=None, random_state=0):
+    features = np.asarray(features)
+    labels = np.asarray(labels)
+    rng = np.random.default_rng(random_state)
+
+    d = features.shape[1]  # number of feature columns
+    if num_features_per_split is None:
+        num_features_per_split = max(1, int(round(d ** 0.5)))
+
+    # Find the build_tree parameter that receives the allowed columns.
+    params = list(inspect.signature(build_tree).parameters)
+    known = {'max_depth', 'min_samples_split'}
+    extra = [p for p in params[2:] if p not in known]
+    feat_param = next((p for p in extra if 'feat' in p.lower() or 'col' in p.lower()),
+                      extra[0] if extra else None)
+
+    forest = []
+    for _ in range(num_trees):
+        sampled_features, sampled_labels = bootstrap_sample(features, labels, rng)
+        feature_indices = feature_subset(d, num_features_per_split, rng)
+        kwargs = {'max_depth': max_depth, 'min_samples_split': min_samples_split}
+        if feat_param is not None:
+            kwargs[feat_param] = feature_indices
+        tree = build_tree(sampled_features, sampled_labels, **kwargs)
+        forest.append({'tree': tree, 'feature_indices': feature_indices})
+    return forest
 
 # Step 13 - combine_predictions (not yet solved)
 # TODO: implement
