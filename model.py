@@ -204,8 +204,17 @@ def train_forest(features, labels, num_trees=10, max_depth=10, min_samples_split
         forest.append({'tree': tree, 'feature_indices': feature_indices})
     return forest
 
-# Step 13 - combine_predictions (not yet solved)
-# TODO: implement
+# Step 13 - combine_predictions
+def combine_predictions(tree_predictions):
+    # TODO: aggregate the per-tree predictions of an ensemble into one prediction per example.
+    tree_predictions = np.asarray(tree_predictions)
+    n = tree_predictions.shape[1]  # number of examples
+    result = np.empty(n, dtype=int)
+    for j in range(n):
+        # votes: the classes chosen by each tree for example j
+        classes, counts = np.unique(tree_predictions[:, j], return_counts=True)
+        result[j] = classes[np.argmax(counts)]  # majority vote; ties go to the smallest class
+    return result
 
 # Step 14 - predict_forest (not yet solved)
 # TODO: implement
